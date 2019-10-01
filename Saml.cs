@@ -244,13 +244,14 @@ namespace Saml
 
 		private string _issuer;
 		private string _assertionConsumerServiceUrl;
+		private bool _forceAuthn;
 
 		public enum AuthRequestFormat
 		{
 			Base64 = 1
 		}
 
-		public AuthRequest(string issuer, string assertionConsumerServiceUrl)
+		public AuthRequest(string issuer, string assertionConsumerServiceUrl, bool forceAuthn = false)
 		{
 			RSAPKCS1SHA256SignatureDescription.Init(); //init the SHA256 crypto provider (for needed for .NET 4.0 and lower)
 
@@ -259,6 +260,7 @@ namespace Saml
 
 			_issuer = issuer;
 			_assertionConsumerServiceUrl = assertionConsumerServiceUrl;
+			_forceAuthn = forceAuthn;
 		}
 
 		public string GetRequest(AuthRequestFormat format)
@@ -276,6 +278,7 @@ namespace Saml
 					xw.WriteAttributeString("IssueInstant", _issue_instant);
 					xw.WriteAttributeString("ProtocolBinding", "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST");
 					xw.WriteAttributeString("AssertionConsumerServiceURL", _assertionConsumerServiceUrl);
+					xw.WriteAttributeString("ForceAuthn", _forceAuthn.ToString());
 
 					xw.WriteStartElement("saml", "Issuer", "urn:oasis:names:tc:SAML:2.0:assertion");
 					xw.WriteString(_issuer);
